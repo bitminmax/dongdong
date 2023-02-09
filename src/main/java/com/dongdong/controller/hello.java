@@ -13,6 +13,11 @@ import java.util.List;
 public class hello {
     @Resource
     private SelectUserImp selectUserImp;
+
+    /**
+     *
+     * @return 返回了一个数字1
+     */
     @GetMapping("/")
     public String hello(){
         return "1";
