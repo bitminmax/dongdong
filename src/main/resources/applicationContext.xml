@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+  <!--    开启spring注解的扫描 controller 不需要扫描-->
+  <context:component-scan base-package="com.dongdong">
+    <!--    将controller层交给 springmvc扫描-->
+    <context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+  </context:component-scan>
+  <!--读取properties文件-->
+  <context:property-placeholder location="classpath:jdbc.properties"/>
+  <!--创建连接池注入容器-->
+  <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource">
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="driverClassName" value="${jdbc.driver}"/>
+  </bean>
+  <!--spring整合mybatis后控制的创建获取SqlSessionFactory的对象-->
+  <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sessionFactory">
+    <!--配置连接池-->
+    <property name="dataSource" ref="dataSource"/>
+    <!--配置mybatis配置文件的路径-->
+    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+  </bean>
+
+  <!--mapper扫描配置，扫描到的mapper对象会被注入Spring容器中-->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" id="mapperScannerConfigurer">
+    <property name="basePackage" value="com.dongdong.mapper"/>
+  </bean>
+</beans>
